@@ -20,23 +20,24 @@ class UserInterface:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
+    def get_text_interaction(self, user_input):
+        if user_input.audio:
+            return self.conversation_agent_object.transcribe_audio(user_input.audio)
+        return user_input.text
+
     def run(self):
-        text_interaction = st.chat_input(
-            "Que veux tu moussaillon ?", accept_file=False, accept_audio=False
+        user_input = st.chat_input(
+            "Que veux tu moussaillon ?", accept_file=False, accept_audio=True
         )
 
-        if text_interaction:
-            self.conversation_agent_object.ask_llm(text_interaction)
-            self.show_discussion_history()
+        if user_input:
+            text_interaction = self.get_text_interaction(user_input)
+            if text_interaction:
+                self.conversation_agent_object.ask_llm(text_interaction)
+
+        self.show_discussion_history()
 
 
 if __name__ == "__main__":
     user_interface_object = UserInterface()
     user_interface_object.run()
-
-    # response = ask_llm(user_input)
-    # with st.chat_message("user"):
-    # 	st.markdown(user_input)
-
-    # with st.chat_message("system"):
-    # 	st.markdown(response)

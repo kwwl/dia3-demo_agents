@@ -44,6 +44,14 @@ class ConversationAgent:
 
         self.update_conversation_history(role="assistant", content=response)
 
+    def transcribe_audio(self, audio_file):
+        transcription = self.groq_client.audio.transcriptions.create(
+            file=(audio_file.name, audio_file.getvalue()),
+            model="whisper-large-v3-turbo",
+            language="fr",
+        )
+        return transcription.text
+
 
 if __name__ == "__main__":
     question = input("Pose ta question :\n")
